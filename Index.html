@@ -1,0 +1,286 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Move for Future You</title>
+<style>
+:root{--ink:#29253d;--pink:#f1a0b8;--lav:#eee9ff;--paper:#fffdfb;--muted:#777184;--green:#e4f6eb}
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:linear-gradient(135deg,#fff4ed,#f3efff,#edf9f2);color:var(--ink);font-family:Arial,system-ui,sans-serif}
+main{max-width:1000px;margin:auto}
+.panel{background:var(--paper);border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 8px 28px #30234310}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 2px 20px;gap:10px}
+.brand{font-weight:900;letter-spacing:1px}
+.pill{background:#fff0e7;padding:8px 12px;border-radius:20px;font-size:12px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.03;letter-spacing:-1.5px;margin:15px 0}
+h2{font-size:21px;margin:0 0 8px}
+p{color:var(--muted);line-height:1.5}
+.hero img{width:100%;height:310px;object-fit:cover;object-position:center 35%;border-radius:18px;background:#eee}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.energy,.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0}
+.choice{padding:13px 5px;border:2px solid #eee5ed;border-radius:14px;background:white;color:var(--ink)}
+.choice span{display:block;font-size:24px;margin-bottom:5px}
+.choice small{display:block;color:var(--muted);margin-top:4px}
+.choice.active{border-color:#d77f9d;background:#fff0f5}
+.exercise{display:flex;gap:11px;align-items:flex-start;background:white;border:1px solid #eee5ed;border-radius:13px;padding:13px;margin:8px 0}
+.exercise input{width:19px;height:19px;margin-top:3px;accent-color:#c36d91}
+.exercise label{flex:1;font-weight:700;font-size:14px}
+.exercise small{display:block;color:var(--muted);font-weight:400;margin-top:4px;line-height:1.4}
+.meta{font-size:12px;color:var(--muted);white-space:nowrap}
+.done{background:var(--green)!important}
+.bar{height:10px;border-radius:20px;background:#eee8f0;overflow:hidden;margin:8px 0}
+.bar div{height:100%;width:0;background:linear-gradient(90deg,#ef9ab4,#b6a4ef);transition:.2s}
+.primary{width:100%;background:var(--ink);color:white;padding:14px;border-radius:13px;font-weight:800;margin-top:12px}
+.primary:disabled{opacity:.45;cursor:not-allowed}
+input[type=number]{width:100%;padding:12px;border:1px solid #ddd3e2;border-radius:12px;font-size:16px;margin:8px 0}
+.stats{grid-template-columns:repeat(2,1fr)}
+.stat{background:#f6f1fb;padding:15px;border-radius:14px}
+.stat strong{display:block;font-size:27px}
+.stat small{color:var(--muted)}
+.quote{background:linear-gradient(120deg,#fff0e7,#f1edff);padding:18px;border-radius:17px;font-weight:750;font-size:17px;margin:15px 0}
+.secondary{background:var(--lav);padding:10px 12px;border-radius:10px;margin:5px 4px 5px 0;font-weight:700}
+.history{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #eee;padding:11px 0;font-size:13px}
+.note{font-size:12px;line-height:1.6}
+#burnText{font-size:14px;font-weight:700}
+footer{text-align:center;font-size:12px;color:var(--muted);padding:12px}
+@media(max-width:720px){body{padding:10px}.grid,.hero{grid-template-columns:1fr}.hero img{height:250px}.panel{padding:17px}.meta{font-size:11px}.energy{gap:5px}.choice{font-size:13px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+ <div class="brand">✦ MOVE FOR FUTURE YOU</div>
+ <div id="date" class="pill"></div>
+</header>
+
+<section class="panel hero">
+ <div>
+  <div class="pill">YOUR PERSONAL FITNESS HABIT COACH</div>
+  <h1>Build the body.<br>Build the habit.</h1>
+  <p>Intermediate workouts, daily walks, short-run options and a consistency tracker. One day at a time.</p>
+  <div class="pill">🎂 Birthday milestone · 25 December 2026</div>
+ </div>
+ <img
+  src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=85"
+  alt="Woman exercising"
+  onerror="this.style.display='none'">
+</section>
+
+<div class="grid">
+<section class="panel">
+ <h2>1. Choose your energy today</h2>
+ <p>Choose the plan that suits how you feel. All plans avoid jumping.</p>
+ <div class="energy">
+  <button class="choice" data-energy="low"><span>🌱</span>Low<small>Walk + lighter workout</small></button>
+  <button class="choice" data-energy="medium"><span>🌤️</span>Medium<small>Brisk walk + strength</small></button>
+  <button class="choice" data-energy="high"><span>⚡</span>High<small>Strength + run option</small></button>
+ </div>
+
+ <h2 id="planTitle">Choose your plan</h2>
+ <p id="planDesc">Your workout will appear here.</p>
+ <div id="exercises"></div>
+
+ <p><strong id="progress">0% completed</strong></p>
+ <div class="bar"><div id="progressBar"></div></div>
+ <button class="primary" id="complete" disabled>Complete today's workout</button>
+ <p id="message"></p>
+ <p class="note">Walk and run calories are estimated from your step count. Workout calories estimate the non-walking portion of the routine, so avoid treating the total as an exact measurement.</p>
+</section>
+
+<div>
+<section class="panel">
+ <h2>2. Your daily activity target</h2>
+ <p>Enter the total number of steps shown by your phone or watch. Update it during the day.</p>
+ <label for="steps"><strong>Today's step count</strong></label>
+ <input id="steps" type="number" min="0" max="100000" step="100" placeholder="e.g. 6500">
+ <p id="stepCalories">Estimated calories from steps: 0 kcal</p>
+ <p id="workoutCalories">Estimated workout calories: 0 kcal</p>
+ <div class="bar"><div id="burnBar"></div></div>
+ <p id="burnText">0 / 300 estimated activity kcal</p>
+ <p id="gapText"></p>
+ <p class="note">This is a rough estimate based on an assumed body weight of 67.5 kg. Actual burn varies with pace, terrain, fitness and other factors. Steps include walking and running.</p>
+</section>
+
+<section class="panel">
+ <h2>Your consistency club</h2>
+ <div class="stats">
+  <div class="stat"><strong id="streak">0</strong><small>🔥 Current streak</small></div>
+  <div class="stat"><strong id="xp">0</strong><small>⭐ Total XP</small></div>
+  <div class="stat"><strong id="days">0</strong><small>✓ Completed days</small></div>
+  <div class="stat"><strong id="best">0</strong><small>🏆 Best streak</small></div>
+ </div>
+ <div id="quote" class="quote"></div>
+ <button class="secondary" id="newQuote">↻ New motivation</button>
+ <h2 style="margin-top:20px">Recent completed days</h2>
+ <div id="history"></div>
+ <button class="secondary" id="export">Export progress</button>
+ <button class="secondary" id="reset">Reset app data</button>
+</section>
+</div>
+</div>
+
+<section class="panel">
+ <h2>3. Optional short run</h2>
+ <p>Only on days when you feel well and your joints are comfortable. Running is optional, not a requirement.</p>
+ <div class="exercise"><input type="checkbox" id="runDone">
+  <label for="runDone">Easy run/walk intervals
+   <small>Start with 1 minute of easy jogging followed by 2 minutes of walking, repeated 4–6 times. Skip the jog and walk instead if you're not ready.</small>
+  </label>
+ </div>
+ <p class="note">The steps you record above already include your run steps. This optional checkbox does not add extra calorie estimates.</p>
+</section>
+
+<p class="note">Your health comes first. Stop for pain, dizziness, chest discomfort or unusual breathlessness. If you're ill or unusually weak, choose rest instead of chasing a calorie number. The app cannot guarantee weight loss or an exact calorie burn.</p>
+<footer>Your progress is saved in this browser · No food diary · No calorie-intake tracking</footer>
+</main>
+
+<script>
+const plans={
+ low:{
+  title:"Low-energy: move gently",
+  desc:"Around 20–30 minutes including a comfortable walk. Break it into shorter sessions if needed.",
+  workoutKcal:65,
+  items:[
+   ["Easy walk","Take a comfortable outdoor or indoor walk. Build toward 20–30 minutes as tolerated.","20–30 min"],
+   ["Chair squats","Sit back toward a sturdy chair, then stand with control.","2 × 10"],
+   ["Wall push-ups","Keep your body in a straight line.","2 × 10"],
+   ["Standing side leg raises","Hold a chair for balance.","2 × 10/side"],
+   ["Calf raises","Use support and move slowly.","2 × 12"],
+   ["Shoulder rolls and gentle mobility","Keep all movements comfortable.","2 min"]
+  ]
+ },
+ medium:{
+  title:"Medium-energy: steady work",
+  desc:"About 30–40 minutes. Brisk walking plus intermediate strength exercises.",
+  workoutKcal:115,
+  items:[
+   ["Brisk walk","Walk at a pace where you can speak but feel warmer and breathe faster.","25–30 min"],
+   ["Bodyweight or chair squats","Use controlled repetitions; keep knees comfortable.","3 × 12"],
+   ["Wall/counter push-ups","Choose a challenging but manageable height.","3 × 10"],
+   ["Reverse step-back lunges or taps","Use a small range and support if needed.","2 × 10/side"],
+   ["Standing knee drives","No jumping or bouncing.","2 × 45 sec"],
+   ["Standing side leg raises","Keep your torso upright.","2 × 12/side"],
+   ["Calf raises","Pause briefly at the top.","2 × 15"]
+  ]
+ },
+ high:{
+  title:"High-energy: strength + conditioning",
+  desc:"About 35–50 minutes. Controlled strength work and a brisk finish.",
+  workoutKcal:170,
+  items:[
+   ["Brisk walk warm-up","Start easy, then increase pace.","5 min"],
+   ["Bodyweight squats","Use a comfortable depth and steady tempo.","3 × 15"],
+   ["Incline push-ups","Use a stable counter or bench if appropriate.","3 × 10–12"],
+   ["Reverse lunges or step-back taps","Hold support if balance needs it.","3 × 10/side"],
+   ["Glute bridges","Lie on a clean mat or bed if comfortable.","3 × 12"],
+   ["Standing knee drives","Fast controlled steps; no hopping.","3 × 45 sec"],
+   ["Calf raises","Controlled repetitions.","3 × 15"],
+   ["Brisk walk cool-down","Finish at a comfortable pace.","5–10 min"]
+  ]
+ };
+const quotes=[
+ "You don't need a perfect day. You need a repeatable one.",
+ "Your fitness is built by the choices you can keep repeating.",
+ "Discipline includes knowing when to recover.",
+ "Small actions, repeated often, become your new normal.",
+ "Show up for your future self, not to punish your present self.",
+ "Progress is not ruined by one imperfect day.",
+ "Consistency beats a burst of motivation."
+];
+const $=id=>document.getElementById(id);
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+$("date").textContent=new Date().toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+let data={};
+try{data=JSON.parse(localStorage.getItem("moveFutureYouV2")||"{}")}catch(e){}
+data.days=data.days||{};
+let energy=data.days[today()]?.energy||"";
+$("steps").value=data.days[today()]?.steps??"";
+
+function save(){localStorage.setItem("moveFutureYouV2",JSON.stringify(data))}
+function current(){return data.days[today()]}
+function render(){
+ document.querySelectorAll("[data-energy]").forEach(b=>b.classList.toggle("active",b.dataset.energy===energy));
+ const d=current();
+ if(!energy){
+  $("planTitle").textContent="Choose your plan";
+  $("planDesc").textContent="Your workout will appear here.";
+  $("exercises").innerHTML="";
+  $("complete").disabled=true;updateProgress();updateBurn();return;
+ }
+ const p=plans[energy];
+ $("planTitle").textContent=p.title;$("planDesc").textContent=p.desc;
+ $("exercises").innerHTML=p.items.map((x,i)=>`
+ <div class="exercise ${d?.checks?.[i]?"done":""}">
+  <input type="checkbox" id="ex${i}" data-i="${i}" ${d?.checks?.[i]?"checked":""} ${d?.completed?"disabled":""}>
+  <label for="ex${i}">${x[0]}<small>${x[1]}</small></label><span class="meta">${x[2]}</span>
+ </div>`).join("");
+ $("exercises").querySelectorAll("input").forEach(c=>c.addEventListener("change",()=>{
+  current().checks[+c.dataset.i]=c.checked;save();render();updateBurn();
+ }));
+ $("complete").disabled=!!d?.completed||!d?.checks||d.checks.filter(Boolean).length!==p.items.length;
+ $("complete").textContent=d?.completed?"✓ Workout completed":"Complete today's workout";
+ updateProgress();updateBurn();
+}
+function updateProgress(){
+ const boxes=[...$("exercises").querySelectorAll("input")];
+ const done=boxes.filter(b=>b.checked).length;
+ const pct=boxes.length?Math.round(done/boxes.length*100):0;
+ $("progress").textContent=pct+"% completed · "+done+" of "+boxes.length;
+ $("progressBar").style.width=pct+"%";
+ $("complete").disabled=!energy||!boxes.length||done!==boxes.length||!!current()?.completed;
+}
+function updateBurn(){
+ const n=Math.max(0,Math.min(100000,Number($("steps").value)||0));
+ const stepKcal=Math.round(n*0.04);
+ const exerciseKcal=energy?plans[energy].workoutKcal:0;
+ // The step estimate includes walking/running. Workout estimate is for the strength/mobility portion only.
+ const total=stepKcal+exerciseKcal;
+ $("stepCalories").textContent="Estimated calories from steps: "+stepKcal+" kcal";
+ $("workoutCalories").textContent="Estimated strength/mobility calories: "+exerciseKcal+" kcal";
+ $("burnText").textContent=total+" / 300 estimated activity kcal";
+ $("burnBar").style.width=Math.min(100,total/3)+"%";
+ $("gapText").textContent=total>=300?"🎉 Estimated target reached. Remember, this is not an exact measurement.":"Estimated difference to target: "+(300-total)+" kcal. A comfortable walk may help; don't force exercise when unwell.";
+ if(current()){current().steps=n;save()}
+}
+function completedKeys(){return Object.keys(data.days).filter(k=>data.days[k].completed).sort()}
+function stats(){
+ const keys=completedKeys();let best=0,run=0,prev=null;
+ keys.forEach(k=>{const d=new Date(k+"T12:00:00");run=prev&&(d-prev)/86400000===1?run+1:1;best=Math.max(best,run);prev=d});
+ let streak=0,cursor=new Date(today()+"T12:00:00"),set=new Set(keys);
+ const y=new Date(cursor);y.setDate(y.getDate()-1);
+ const key=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+ if(set.has(today())||set.has(key(y))){while(set.has(key(cursor))){streak++;cursor.setDate(cursor.getDate()-1)}if(!streak){cursor=y;while(set.has(key(cursor))){streak++;cursor.setDate(cursor.getDate()-1)}}}
+ $("streak").textContent=streak;$("best").textContent=best;$("xp").textContent=keys.length*100;$("days").textContent=keys.length;
+ $("history").innerHTML=keys.slice(-7).reverse().map(k=>`<div class="history"><span>${k} · ${data.days[k].energy} energy · ${data.days[k].steps||0} steps</span><strong>100 XP</strong></div>`).join("")||"<p>No completed workouts yet.</p>";
+}
+function quote(){$("quote").textContent="“"+quotes[Math.floor(Math.random()*quotes.length)]+"”"}
+document.querySelectorAll("[data-energy]").forEach(b=>b.addEventListener("click",()=>{
+ if(current()?.completed)return;
+ const chosen=b.dataset.energy,old=current()||{};
+ data.days[today()]={...old,energy:chosen,checks:old.energy===chosen?(old.checks||[]):[],completed:false,steps:Number($("steps").value)||old.steps||0};
+ energy=chosen;save();render();stats();
+}));
+$("steps").addEventListener("input",updateBurn);
+$("complete").addEventListener("click",()=>{
+ if(!current()||current().completed)return;
+ current().completed=true;save();render();stats();
+ $("message").textContent="✨ Workout completed! +100 XP. Great work showing up.";
+});
+$("newQuote").addEventListener("click",quote);
+$("export").addEventListener("click",()=>{
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="my-fitness-progress.json";a.click();URL.revokeObjectURL(url);
+});
+$("reset").addEventListener("click",()=>{
+ if(confirm("Delete all saved progress in this browser?")){
+  localStorage.removeItem("moveFutureYouV2");data={days:{}};energy="";$("steps").value="";$("message").textContent="";render();stats();
+ }
+});
+quote();render();stats();updateBurn();
+</script>
+</body>
+</html>
